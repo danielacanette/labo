@@ -7,7 +7,7 @@ require("rpart")
 require("rpart.plot")
 
 #Aqui se debe poner la carpeta de SU computadora local
-setwd("D:\\gdrive\\ITBA2022A\\")  #Establezco el Working Directory
+setwd("C:/ITBA/DM")  #Establezco el Working Directory
 
 #cargo los datos de 202011 que es donde voy a ENTRENAR el modelo
 dtrain  <- fread("./datasets/paquete_premium_202011.csv")
@@ -19,7 +19,7 @@ modelo  <- rpart("clase_ternaria ~ .",  #quiero predecir clase_ternaria a partir
                  cp=        -0.3,   #esto significa no limitar la complejidad de los splits
                  minsplit=  80,     #minima cantidad de registros para que se haga el split
                  minbucket=  1,     #tamaño minimo de una hoja
-                 maxdepth=   4 )    #profundidad maxima del arbol
+                 maxdepth=   5 )    #profundidad maxima del arbol
 
 
 #grafico el arbol
@@ -48,9 +48,10 @@ entrega  <- dapply[   , list(numero_de_cliente, Predicted) ] #genero la salida
 
 #genero el archivo para Kaggle
 #creo la carpeta donde va el experimento
-dir.create( "./labo/exp/" ) 
-dir.create( "./labo/exp/KA2001" ) 
+#dir.create( "./labo/exp/" ) 
+#dir.create( "./labo/exp/KA2001" ) 
 
 fwrite( entrega, 
-        file= "./labo/exp/KA2001/K101_001.csv", 
+        file= "./labo/exp/KA2001/K101_002.csv", 
         sep= "," )
+

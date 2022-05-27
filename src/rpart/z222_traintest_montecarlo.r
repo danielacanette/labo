@@ -5,7 +5,7 @@ require("data.table")
 require("rpart")
 require("parallel")
 
-ksemillas  <- c(102191, 200177, 410551, 552581, 892237) #reemplazar por las propias semillas
+ksemillas  <- c(131313, 131317, 131319, 130031, 190091) #reemplazar por las propias semillas
 
 #------------------------------------------------------------------------------
 #particionar agrega una columna llamada fold a un dataset que consiste en una particion estratificada segun agrupa
@@ -56,7 +56,7 @@ ArbolEstimarGanancia  <- function( semilla, param_basicos )
 #------------------------------------------------------------------------------
 
 #Aqui se debe poner la carpeta de la computadora local
-setwd("D:\\gdrive\\ITBA2022A\\")   #Establezco el Working Directory
+setwd("C:/ITBA/DM")  #Establezco el Working Directory
 #cargo los datos
 
 dataset  <- fread("./datasets/paquete_premium_202011.csv")

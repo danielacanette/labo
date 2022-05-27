@@ -18,11 +18,11 @@ require("data.table")
 require("lightgbm")
 
 
-ksemilla  <- 102191  #poner aqui la PRIMERA de sus cinco semillas
+ksemilla  <-   102191  #poner aqui la PRIMERA de sus cinco semillas
 
 #Aqui se debe poner la carpeta de la computadora local
-setwd("D:\\gdrive\\ITBA2022A\\")   #Establezco el Working Directory
-
+#setwd("D:\\gdrive\\ITBA2022A\\")   #Establezco el Working Directory
+setwd("C:/ITBA/DM") 
 #cargo el dataset donde voy a entrenar
 dataset  <- fread("./datasets/paquete_premium_202011.csv", stringsAsFactors= TRUE)
 
@@ -45,14 +45,16 @@ dtrain  <- lgb.Dataset( data= data.matrix(  dataset[ , campos_buenos, with=FALSE
 #estos hiperparametros  salieron de una Optmizacion Bayesiana
 modelo  <- lgb.train( data= dtrain,
                       param= list( objective=        "binary",
-                                   max_bin=              31,
+                                   max_bin=               31,
                                    learning_rate=         0.067,
-                                   num_iterations=      128,
-                                   num_leaves=          100,
-                                   min_data_in_leaf=   1700,
+                                   num_iterations=     128,
+                                   num_leaves=           100,
+                                   min_data_in_leaf=    1700,
                                    feature_fraction=      0.37,
+                        
                                    seed=               ksemilla   #aqui se utiliza SU primer semilla
-                                  )
+                                  ),
+                      nrounds = 100L 
                     )
 
 #aplico el modelo a los datos sin clase

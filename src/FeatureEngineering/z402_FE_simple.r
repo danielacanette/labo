@@ -128,7 +128,7 @@ EnriquecerDataset  <- function( dataset , arch_destino )
 #aqui comienza el programa
 
 #Establezco el Working Directory
-setwd( "D:\\gdrive\\ITBA2022A\\" )
+setwd("C:/ITBA/DM") #setwd( "D:\\gdrive\\ITBA2022A\\" )
 
 
 #lectura de los datasets
@@ -140,7 +140,8 @@ dataset2  <- fread("./datasets/paquete_premium_202101.csv")
 # FE  representa  Feature Engineering
 dir.create( "./labo/exp/",  showWarnings = FALSE ) 
 dir.create( "./labo/exp/FE4020/", showWarnings = FALSE )
-setwd("D:\\gdrive\\ITBA2022A\\labo\\exp\\FE4020\\")   #Establezco el Working Directory DEL EXPERIMENTO
+setwd("C:/ITBA/DM/labo/exp/FE4020/")
+#setwd("D:\\gdrive\\ITBA2022A\\labo\\exp\\FE4020\\")   #Establezco el Working Directory DEL EXPERIMENTO
 
 EnriquecerDataset( dataset1, "paquete_premium_202011_ext.csv" )
 EnriquecerDataset( dataset2, "paquete_premium_202101_ext.csv" )
