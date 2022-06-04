@@ -1,6 +1,4 @@
-# vCPU  8,    RAM  16GB,   Espacio en Disco  256 GB
-
-# Este script esta pensado para correr en Google Cloud
+# Este script esta pensado para correr en la PC local 
 # Optimizacion Bayesiana de hiperparametros de  lightgbm, con el metodo TRADICIONAL de los hiperparametros originales de lightgbm
 # 5-fold cross validation
 # la probabilidad de corte es un hiperparametro
@@ -14,21 +12,6 @@ require("rlist")
 
 require("lightgbm")
 
-#paquetes necesarios para la Bayesian Optimization
-require("DiceKriging")
-require("mlrMBO")
-
-
-kBO_iter  <- 100   #cantidad de iteraciones de la Optimizacion Bayesiana
-
-#Aqui se cargan los hiperparametros
-hs <- makeParamSet( 
-  makeNumericParam("learning_rate",    lower=  0.01 , upper=    0.3),
-  makeNumericParam("feature_fraction", lower=  0.2  , upper=    1.0),
-  makeIntegerParam("min_data_in_leaf", lower=  0    , upper= 8000),
-  makeIntegerParam("num_leaves",       lower= 16L   , upper= 1024L),
-  makeNumericParam("prob_corte",       lower= 1/120 , upper=  1/20)  #esto sera visto en clase en gran detalle
-)
 
 ksemilla_azar  <- 131313  #Aqui poner la propia semilla
 
@@ -96,7 +79,6 @@ EstimarGanancia_lightgbm  <- function( x )
                           min_gain_to_split= 0.0, #por ahora, lo dejo fijo
                           lambda_l1= 0.0,         #por ahora, lo dejo fijo
                           lambda_l2= 0.0,         #por ahora, lo dejo fijo
-                          max_bin= 31,            #por ahora, lo dejo fijo
                           num_iterations= 9999,    #un numero muy grande, lo limita early_stopping_rounds
                           force_row_wise= TRUE    #para que los alumnos no se atemoricen con tantos warning
   )
@@ -107,13 +89,13 @@ EstimarGanancia_lightgbm  <- function( x )
   param_completo  <- c( param_basicos, param_variable, x )
   
   set.seed( 999983 )
+  
   modelocv  <- lgb.cv( data= dtrain,
                        eval= fganancia_logistic_lightgbm,
                        stratified= TRUE, #sobre el cross validation
-                       nfold= kfolds,    #folds del cross validation
+                       nfold= 5L , #kfolds,    #folds del cross validation
                        param= param_completo,
-                       verbose= -100
-  )
+                       verbose= -100L)
   
   #obtengo la ganancia
   ganancia  <- unlist(modelocv$record_evals$valid$ganancia$eval)[ modelocv$best_iter ]
@@ -138,22 +120,23 @@ EstimarGanancia_lightgbm  <- function( x )
 #Aqui empieza el programa
 
 #Aqui se debe poner la carpeta de la computadora local
-setwd("/home/dcanettehorvath/")  #Establezco el Working Directory
-
+#setwd("D:\\gdrive\\ITBA2022A\\")   #Establezco el Working Directory
+setwd("/home/dcanettehorvath/")
 
 #cargo el dataset donde voy a entrenar el modelo
 dataset  <- fread("./buckets/b1/datasets/paquete_premium_202011.csv.gz")
 
 #creo la carpeta donde va el experimento
 # HT  representa  Hiperparameter Tuning
-dir.create( "./buckets/b1/exp/",  showWarnings = FALSE ) 
-dir.create( "./buckets/b1/exp/HT5430/", showWarnings = FALSE )
-setwd("./buckets/b1/exp/HT5430/")   #Establezco el Working Directory DEL EXPERIMENTO
+#dir.create( "./buckets/labo/exp/",  showWarnings = FALSE ) 
+dir.create( "./buckets/b9/HT5310/", showWarnings = FALSE )
+setwd("/home/dcanettehorvath/buckets/b9/HT5310/")
+#setwd("D:\\gdrive\\ITBA2022A\\labo\\exp\\HT5310\\")   #Establezco el Working Directory DEL EXPERIMENTO
 
 
 #en estos archivos quedan los resultados
-kbayesiana  <- "HT543.RDATA"
-klog        <- "HT543.txt"
+kbayesiana  <- "HT531.RDATA"
+klog        <- "HT531.txt"
 
 
 GLOBAL_iteracion  <- 0   #inicializo la variable global
@@ -180,38 +163,11 @@ dtrain  <- lgb.Dataset( data= data.matrix(  dataset[ , campos_buenos, with=FALSE
 
 
 
-#Aqui comienza la configuracion de la Bayesian Optimization
-funcion_optimizar  <- EstimarGanancia_lightgbm   #la funcion que voy a maximizar
+#Aqui se llama con los hiperparametros default
+x  <- list( "learning_rate" =      0.1,
+            "feature_fraction" =   1.0,
+            "min_data_in_leaf" =  20,
+            "num_leaves" =        31,
+            "prob_corte" =       1/60 )
 
-configureMlr( show.learner.output= FALSE)
-
-#configuro la busqueda bayesiana,  los hiperparametros que se van a optimizar
-#por favor, no desesperarse por lo complejo
-obj.fun  <- makeSingleObjectiveFunction(
-  fn=       funcion_optimizar, #la funcion que voy a maximizar
-  minimize= FALSE,   #estoy Maximizando la ganancia
-  noisy=    TRUE,
-  par.set=  hs,     #definido al comienzo del programa
-  has.simple.signature = FALSE   #paso los parametros en una lista
-)
-
-ctrl  <- makeMBOControl( save.on.disk.at.time= 600,  save.file.path= kbayesiana)  #se graba cada 600 segundos
-ctrl  <- setMBOControlTermination(ctrl, iters= kBO_iter )   #cantidad de iteraciones
-ctrl  <- setMBOControlInfill(ctrl, crit= makeMBOInfillCritEI() )
-
-#establezco la funcion que busca el maximo
-surr.km  <- makeLearner("regr.km", predict.type= "se", covtype= "matern3_2", control= list(trace= TRUE))
-
-#inicio la optimizacion bayesiana
-if( !file.exists( kbayesiana ) ) {
-  run  <- mbo(obj.fun, learner= surr.km, control= ctrl)
-} else {
-  run  <- mboContinue( kbayesiana )   #retomo en caso que ya exista
-}
-
-
-quit( save="no" )
-
-
-# pero nosotros  NO nos vamos a quedar tranquilos sin cuestionar los hiperparametros originales
-# min_data_in_leaf  y  num_leaves   estan relacionados entre ellos
+EstimarGanancia_lightgbm( x )

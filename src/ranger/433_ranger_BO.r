@@ -24,13 +24,13 @@ kBO_iter  <- 100   #cantidad de iteraciones de la Optimizacion Bayesiana
 
 #Estructura que define los hiperparámetros y sus rangos
 hs  <- makeParamSet(
-          makeIntegerParam("num.trees" ,        lower=  100L, upper= 2500L),  #la letra L al final significa ENTERO
-          makeIntegerParam("max.depth",         lower=    1L, upper=   30L),  # 0 significa profundidad infinita
-          makeIntegerParam("min.node.size" ,    lower=    1L, upper=  500L),
-          makeIntegerParam("mtry" ,             lower=    2L, upper=   50L))
+          makeIntegerParam("num.trees" ,        lower=  100L, upper= 2500L), #2000 4000  #la letra L al final significa ENTERO
+          makeIntegerParam("max.depth",         lower=    1L, upper=   30L),  #7 30  0 significa profundidad infinita
+          makeIntegerParam("min.node.size" ,    lower=    1L, upper=  500L), #400 5000
+          makeIntegerParam("mtry" ,             lower=    2L, upper=   50L)) # 7 30
 
 
-ksemilla_azar  <- 102191  #Aqui poner la propia semilla
+ksemilla_azar  <- 131313  #Aqui poner la propia semilla
 
 #------------------------------------------------------------------------------
 #graba a un archivo los componentes de lista
@@ -146,7 +146,7 @@ EstimarGanancia_ranger  <- function( x )
 
 #Aqui se debe poner la carpeta de la computadora local
 #setwd("D:\\gdrive\\ITBA2022A\\")   #Establezco el Working Directory
-setwd("C:/ITBA/DM") 
+#setwd("C:/ITBA/DM") 
 
 #cargo el dataset donde voy a entrenar el modelo
 dataset  <- fread("./datasets/paquete_premium_202011.csv", stringsAsFactors= TRUE)   #donde entreno
@@ -157,7 +157,8 @@ dataset  <- fread("./datasets/paquete_premium_202011.csv", stringsAsFactors= TRU
 dir.create( "./labo/exp/",  showWarnings = FALSE ) 
 dir.create( "./labo/exp/HT4330/", showWarnings = FALSE )
 #setwd("D:\\gdrive\\ITBA2022A\\labo\\exp\\HT4330\\")   #Establezco el Working Directory DEL EXPERIMENTO
-setwd("C:/ITBA/DM/labo/exp/HT4330/")
+#setwd("C:/ITBA/DM/labo/exp/HT4330/")
+setwd( "./labo/exp/HT4330/")
 
 #en estos archivos quedan los resultados
 kbayesiana  <- "HT433_2.RDATA"

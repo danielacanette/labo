@@ -18,17 +18,19 @@ require("data.table")
 #Aqui comienza el programa
 
 #copio si hace falta el dataset
-
-setwd("~/buckets/b1")
+setwd("C:/ITBA/DM/")
+#setwd("~/buckets/b1")
 dir.create( "./exp/DT0001/", showWarnings = FALSE )
-file.copy( "./datasets/paquete_premium.csv.gz",  "./exp/DT0001/", overwrite= FALSE )
+file.copy( "./datasets/paquete_premium_202011.csv",  "./exp/DT0001/", overwrite= FALSE )
+#file.copy( "./datasets/paquete_premium.csv.gz",  "./exp/DT0001/", overwrite= FALSE )
 
+setwd("C:/ITBA/DM/exp/")
 
-
-setwd( "~/buckets/b1/exp/" )
+#setwd( "~/buckets/b1/exp/" )
 
 #cargo el dataset
-dataset  <- fread("./DT0001/paquete_premium.csv.gz")   #donde entreno
+#dataset  <- fread("./DT0001/paquete_premium.csv.gz")   #donde entreno
+dataset  <- fread("./DT0001/paquete_premium_202011.csv")   #donde entreno
 
 
 #creo la carpeta donde va el experimento
@@ -43,7 +45,7 @@ setorder( dataset,  foto_mes )
 
 campos_buenos  <- setdiff( colnames( dataset), 
                            c("numero_de_cliente","foto_mes","clase_ternaria" ) )
-
+campos_buenos
 
 #------------------------------------------------------------------------------
 #Para cada variable , grafico para cada mes el ratio de ceros que tiene esa variable

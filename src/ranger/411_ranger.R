@@ -30,10 +30,11 @@ dapply  <- na.roughfix( dapply )  #tambien imputo los nulos en los datos donde v
 
 #genero el modelo de Random Forest con la libreria ranger
 #notar como la suma de muchos arboles contrarresta el efecto de min.node.size=1
-param  <- list( "num.trees"=       300,  #cantidad de arboles
-                "mtry"=             9,  #cantidad de variables que evalua para hacer un split  sqrt(ncol(dtrain))
+param  <- list( "num.trees"=      1471, # 300,  #cantidad de arboles
+                "mtry"=            10, # 9,  #cantidad de variables que evalua para hacer un split  sqrt(ncol(dtrain))
                 "min.node.size"=  500,  #tamaño minimo de las hojas
-                "max.depth"=        30,
+                "max.depth"=       22,
+# 30,
                 "xval_folds" = 5    # 0 significa profundidad infinita
 )
 
