@@ -248,9 +248,7 @@ AgregarVariables  <- function( dataset )
   dataset[ , mvr_mpagominimo         := mv_mpagominimo  / mv_mlimitecompra ]
 
   dataset[ , mv_dac      := ctrx_quarter_normalizado*mcaja_ahorro  ]
-  dataset[ , mv_dac2       := ifelse( Cliente_edad<30, 
-                                      mv_msaldototal, 
-                                          0)  ]
+ # dataset[ , mv_dac2       := ifelse( Cliente_edad<30,                                     mv_msaldototal,                                           0)  ]
   
   
   
